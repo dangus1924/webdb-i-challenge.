@@ -46,6 +46,28 @@ server.post('/api/accounts', async (req, res, next) => {
   }
 })
 
+server.put('/api/accounts/:id', async (req, res, next) => {
+      try{
+        const payload = {
+          name: req.body.name,
+          budget: req.body.budget
+        }
+        await db('accounts').where('id', req.params.id).update(payload)
+        res.json(await db('accounts').where('id', req.params.id).first())
+      } catch (err){
+        next(err)
+    }
+})
+
+server.delete('/api/accounts/:id', async (req, res, next) => {
+  try{
+    await db('accounts').where('id', req.params.id).del()
+    res.status(204).end()
+  } catch (err){
+    next(err)
+}
+})
+
   server.use((err, req, res, next) => {
       console.log(err)
       res.status(500).json({
